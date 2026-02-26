@@ -12,10 +12,10 @@ ai_Generate2.fire = function (params) {
 	if(sessionCheck(ret) == false){return ret};
 
 	var args = params["args"];
-	// var no = args[0];
+	var no = args[0];
 	excuteJar("OptTask06",args);
 
-	// ret.eval(" toJAVA2( '"+no+"');")
+	ret.eval(" toJAVA2( '"+no+"');")
 	// 画面へ結果を返す
 	return ret;
 

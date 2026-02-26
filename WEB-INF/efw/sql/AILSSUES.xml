@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE sqls>
 <sqls>
-<!--    检索類型-->
+    <!--    检索類型-->
     <sql id="searchType">
         SELECT  DISTINCT  "類型" as type
         FROM "プロンプト情報管理"
@@ -9,20 +9,20 @@
 
     </sql>
 
-<!--    检索プロンプト概要-->
+    <!--    检索プロンプト概要-->
     <sql id="searchSummary">
         SELECT t1."プロンプト概要" as summary
         FROM "プロンプト情報管理" t1
         WHERE
-            1=1
+        1=1
         <if exists="type">AND  t1."類型" = :type</if>
         ORDER BY "類型" ASC
     </sql>
-<!--检索プロンプト詳細&戻る値種類-->
+    <!--检索プロンプト詳細&戻る値種類-->
     <sql id="searchDetailedAndCategory">
         SELECT
-                t1."プロンプト詳細" as detailed,
-                t1."戻る値種類" as category
+        t1."プロンプト詳細" as detailed,
+        t1."戻る値種類" as category
         FROM "プロンプト情報管理" t1
         WHERE
         1=1
@@ -41,38 +41,38 @@
         <if exists="summary">AND  t1."プロンプト概要" = :summary</if>
 
     </sql>
-<!--    检索-->
+    <!--    检索-->
     <sql id="searchAll">
         SELECT
-            t2."番号" as no,
-            t2."類型" as type,
-            t2."難易度" as difficulty,
-            t2."戻る値種類" as category,
-            t2."プロンプト概要" as summary,
-            t2."プロンプト詳細" as detail,
-            t2."ステータス" as state,
-            TO_CHAR(t2."登録日時", 'YYYY-MM-DD HH24-MI-SS') as registrationdate ,
-            case when t2."ステータス" = '回答済' then TO_CHAR(t2."更新日時", 'YYYY-MM-DD HH24-MI-SS') else '' end as updatedate
+        t2."番号" as no,
+        t2."類型" as type,
+        t2."難易度" as difficulty,
+        t2."戻る値種類" as category,
+        t2."プロンプト概要" as summary,
+        t2."プロンプト詳細" as detail,
+        t2."ステータス" as state,
+        TO_CHAR(t2."登録日時", 'YYYY-MM-DD HH24-MI-SS') as registrationdate ,
+        case when t2."ステータス" = '回答済' then TO_CHAR(t2."更新日時", 'YYYY-MM-DD HH24-MI-SS') else '' end as updatedate
         FROM
-            "AI質問情報管理" t2
+        "AI質問情報管理" t2
         WHERE
-            1 = 1
-            <if exists="type"> AND t2."類型"  = :type</if>
-            <if exists="difficulty"> AND t2."難易度"  = :difficulty</if>
+        1 = 1
+        <if exists="type"> AND t2."類型"  = :type</if>
+        <if exists="difficulty"> AND t2."難易度"  = :difficulty</if>
         ORDER BY t2."番号" desc
     </sql>
     <!--    检索回答信息-->
     <sql id="searchAnswerListForNO">
         SELECT
-            t1."番号" as no,
-            t1."回答" as answer,
-            t1."戻る値種類" as category,
-            coalesce(t1."メモー１" , null) as memo1,
-            coalesce(t1."メモー２" , null) as memo2,
-            coalesce(t1."メモー３" , null) as memo3,
-            coalesce(t1."メモー４" , null) as memo4,
-            coalesce(t1."メモー５" , null) as memo5,
-            t1."ステータス" as state
+        t1."番号" as no,
+        t1."回答" as answer,
+        t1."戻る値種類" as category,
+        coalesce(t1."メモー１" , null) as memo1,
+        coalesce(t1."メモー２" , null) as memo2,
+        coalesce(t1."メモー３" , null) as memo3,
+        coalesce(t1."メモー４" , null) as memo4,
+        coalesce(t1."メモー５" , null) as memo5,
+        t1."ステータス" as state
         FROM "AI質問情報管理" t1
         WHERE t1."番号" = :no
     </sql>
@@ -80,8 +80,8 @@
     <!--    查询Ai回复-->
     <sql id="selectAiReply">
         SELECT
-            coalesce(t1."回答" , '')as answer,
-            t1."ステータス" as state
+        coalesce(t1."回答" , '')as answer,
+        t1."ステータス" as state
         FROM "AI質問情報管理" t1
         WHERE 1=1
         <if exists="no"> AND t1."番号"  = :no</if>
@@ -92,43 +92,73 @@
     <sql id="insertAiAnswer">
         INSERT INTO "AI質問情報管理"
         VALUES(
-                :no,
-                :type,
-                :summary,
-                :detailed,
-                :category,
-                :state,
-                :difficulty,
-                :aiopt,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
+        :no,
+        :type,
+        :summary,
+        :detailed,
+        :category,
+        :state,
+        :difficulty,
+        :aiopt,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
 
-                :shopid,
-                null,
-                to_timestamp(CAST(CURRENT_TIMESTAMP AS text), 'YYYY-MM-DD HH24-MI-SS'),
-                null
+        :shopid,
+        null,
+        to_timestamp(CAST(CURRENT_TIMESTAMP AS text), 'YYYY-MM-DD HH24-MI-SS'),
+        null
         )
     </sql>
 
+    <!--    -->
+    <sql id="insertAiDocumentDetailInfo">
+        insert into "AI質問情報管理_添付資料" (
+        "番号"
+        , "枝番号"
+        , "拡張子"
+        , "元ファイル"
+        , "縮略ファイル500"
+        , "縮略ファイル200"
+        , "縮略ファイル50"
+        , "コメント"
+        , "登録ID"
+        , "更新ID"
+        , "登録日時"
+        , "更新日時"
+        )values(
+        :no,
+        :document_sub_no,
+        :suffix,
+        :content,
+        :content_tb500,
+        :content_tb200,
+        :content_tb50,
+        :comment,
+        :userid,
+        :userid,
+        CURRENT_TIMESTAMP,
+        CURRENT_TIMESTAMP
+        )
+    </sql>
 
     <!--    修改回答-->
     <sql id="updateMemo">
         UPDATE
-             "AI質問情報管理"
+        "AI質問情報管理"
         SET
-            "メモー１" = :memo1,
-            "メモー２" = :memo2,
-            "メモー３" = :memo3,
-            "メモー４" = :memo4,
-            "メモー５" = :memo5,
-            "ステータス" = :state,
-            "更新日時" = to_timestamp(CAST(CURRENT_TIMESTAMP AS text), 'YYYY-MM-DD HH24-MI-SS')
+        "メモー１" = :memo1,
+        "メモー２" = :memo2,
+        "メモー３" = :memo3,
+        "メモー４" = :memo4,
+        "メモー５" = :memo5,
+        "ステータス" = :state,
+        "更新日時" = to_timestamp(CAST(CURRENT_TIMESTAMP AS text), 'YYYY-MM-DD HH24-MI-SS')
         WHERE
-            "番号" = :no
+        "番号" = :no
     </sql>
 
     <!--    删除回复-->
@@ -140,20 +170,20 @@
 
     <sql id="selectTaskToAi05">
         SELECT
-            t2."番号" as no,
-            t2."類型" as type,
-            t2."難易度" as difficulty,
-            t2."戻る値種類" as category,
-            t2."プロンプト概要" as summary,
-            t2."プロンプト詳細" as detail,
-            t2."ステータス" as state,
-            t2."AiType" as ai,
-            TO_CHAR(t2."登録日時", 'YYYY-MM-DD HH24-MI-SS') as registrationdate ,
-            case when t2."ステータス" = '回答済' then TO_CHAR(t2."更新日時", 'YYYY-MM-DD HH24-MI-SS') else '' end as updatedate
+        t2."番号" as no,
+        t2."類型" as type,
+        t2."難易度" as difficulty,
+        t2."戻る値種類" as category,
+        t2."プロンプト概要" as summary,
+        t2."プロンプト詳細" as detail,
+        t2."ステータス" as state,
+        t2."AiType" as ai,
+        TO_CHAR(t2."登録日時", 'YYYY-MM-DD HH24-MI-SS') as registrationdate ,
+        case when t2."ステータス" = '回答済' then TO_CHAR(t2."更新日時", 'YYYY-MM-DD HH24-MI-SS') else '' end as updatedate
         FROM
-            "AI質問情報管理" t2
+        "AI質問情報管理" t2
         WHERE
-            t2."ステータス" = '作成中'
+        t2."ステータス" = '作成中'
         ORDER BY t2."番号"
     </sql>
 
